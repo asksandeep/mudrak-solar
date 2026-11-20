@@ -77,6 +77,45 @@
 
   calculate();
 
+  /* ---------- Quick contact form ---------- */
+  var WA_NUMBER = '919422122008'; // replace with your WhatsApp number, country code first, digits only
+  var form = document.getElementById('quickForm');
+
+  function flag(fieldId, errId, bad) {
+    document.getElementById(errId).hidden = !bad;
+    document.getElementById(fieldId).parentElement.classList.toggle('has-err', bad);
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = document.getElementById('qName').value.trim();
+    var phone = document.getElementById('qPhone').value.replace(/[\s-]/g, '').replace(/^(\+91|0)/, '');
+    var type = document.getElementById('qType').value;
+    var bill = document.getElementById('qBill').value.trim();
+    var msg = document.getElementById('qMsg').value.trim();
+
+    var badName = name.length < 2;
+    var badPhone = !/^[6-9]\d{9}$/.test(phone);
+    flag('qName', 'qNameErr', badName);
+    flag('qPhone', 'qPhoneErr', badPhone);
+    if (badName || badPhone) {
+      (badName ? document.getElementById('qName') : document.getElementById('qPhone')).focus();
+      return;
+    }
+
+    var text = 'Hi, I want a free solar site survey.\n' +
+      'Name: ' + name + '\n' +
+      'Phone: ' + phone + '\n' +
+      'Property: ' + type + '\n' +
+      (bill ? 'Monthly bill: ₹' + bill + '\n' : '') +
+      (msg ? 'Message: ' + msg : '');
+
+    document.getElementById('qWa').href = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(text);
+    document.getElementById('qOkName').textContent = name;
+    document.getElementById('qOk').hidden = false;
+    document.getElementById('qOk').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  });
+
   /* ---------- FAQ accordion ---------- */
   var faqList = document.getElementById('faq-list');
 
